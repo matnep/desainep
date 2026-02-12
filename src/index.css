@@ -162,35 +162,7 @@ body {
 }
 
 
-/* Deep Space Nebula Theme */
-.nebula-bg {
-  position: relative;
-  background: radial-gradient(ellipse at top, #1a1035 0%, #0d0d17 100%);
-  background-attachment: fixed;
-  overflow: hidden;
-}
 
-.nebula-star {
-  position: fixed;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  animation: twinkle 4s ease-in-out infinite;
-}
-
-@keyframes twinkle {
-
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50%,
-  100% {
-    opacity: 1;
-  }
-}
 
 .animate-pulse {
   animation: pulse-glow 3s ease-in-out infinite;

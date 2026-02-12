@@ -70,7 +70,7 @@ const Hero = () => {
                 >
                     <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white mb-8 leading-[0.9] font-['Geist_Mono'] select-none pointer-events-none uppercase">
                         <div className="block mb-2"><SplitText text="UNFORGETTABLE" lineIndex={0} /></div>
-                        <div className="block text-emerald-400">
+                        <div className="block text-white">
                             <SplitText text="BY DESIGN" lineIndex={1} />
                         </div>
                     </h1>
