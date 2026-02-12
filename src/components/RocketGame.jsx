@@ -722,6 +722,16 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                 }
             }
 
+            // --- UFO Body Collision ---
+            if (s.boss && !s.dead && !s.gameOver && s.invincible <= 0) {
+                const dx = s.rocket.x - s.boss.x;
+                const dy = s.rocket.y - s.boss.y;
+                // Elliptical collision: saucer is 50px wide, 12px tall
+                if ((dx * dx) / (55 * 55) + (dy * dy) / (20 * 20) < 1) {
+                    destroyRocket();
+                }
+            }
+
             // --- Boss Projectiles ---
             for (let i = s.bossProjectiles.length - 1; i >= 0; i--) {
                 const bp = s.bossProjectiles[i];
