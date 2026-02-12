@@ -796,6 +796,20 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                     ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(-18, -16); ctx.lineTo(-16, -6); ctx.closePath();
                     ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.fill();
                     ctx.beginPath(); ctx.moveTo(-8, 8); ctx.lineTo(-18, 16); ctx.lineTo(-16, 6); ctx.closePath(); ctx.fill();
+                    // --- Aiming dots ---
+                    const aimLen = 100;
+                    const dotCount = 8;
+                    for (let d = 0; d < dotCount; d++) {
+                        const t = (d + 1) / dotCount;
+                        const dx = 26 + t * aimLen;
+                        const alpha = 0.25 * (1 - t);
+                        const radius = 1.5 * (1 - t * 0.5);
+                        ctx.beginPath();
+                        ctx.arc(dx, 0, radius, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                        ctx.fill();
+                    }
+
                     ctx.restore();
                 }
             }
