@@ -141,16 +141,60 @@ const Hero = () => {
                 )}
             </AnimatePresence>
 
-            {/* Game Over Screen */}
+            {/* Game Over — inline display */}
             <AnimatePresence>
                 {showGameOver && (
-                    <GameOverScreen
-                        onRestart={handleRestart}
-                        onLeaderboard={() => {
-                            setShowGameOver(false);
-                            setVictory(0);
-                        }}
-                    />
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute bottom-28 left-0 z-[200] px-6 w-full pointer-events-auto"
+                        style={{ cursor: "default" }}
+                    >
+                        <div className="container mx-auto max-w-5xl">
+                            <div className="flex items-center gap-4 flex-wrap">
+                                <motion.span
+                                    animate={{ opacity: [0.4, 1, 0.4] }}
+                                    transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                                    className="text-2xl md:text-3xl font-black uppercase tracking-tight font-['Geist_Mono']"
+                                    style={{
+                                        color: "rgba(239, 68, 68, 0.9)",
+                                        textShadow: "0 0 20px rgba(239,68,68,0.4)",
+                                    }}
+                                >
+                                    ⚠ GAME OVER
+                                </motion.span>
+
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => window.location.reload()}
+                                    className="px-6 py-2 border border-red-500/40 text-red-400 font-bold rounded-full text-xs uppercase cursor-pointer hover:bg-red-500/10 transition-all duration-300 font-['Geist_Mono'] tracking-wider"
+                                >
+                                    ↻ Restart
+                                </motion.button>
+
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.7 }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => {
+                                        setShowGameOver(false);
+                                        setVictory(0);
+                                    }}
+                                    className="px-6 py-2 border border-emerald-500/40 text-emerald-400 font-bold rounded-full text-xs uppercase cursor-pointer hover:bg-emerald-500/10 transition-all duration-300 font-['Geist_Mono'] tracking-wider"
+                                >
+                                    ◆ Leaderboard
+                                </motion.button>
+                            </div>
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </section>
