@@ -40,10 +40,10 @@ const GameOverScreen = ({ onRestart, onLeaderboard }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 flex flex-col items-center justify-center"
+            className="fixed inset-0 flex flex-col items-center justify-center"
             style={{
                 zIndex: 9999,
-                cursor: "auto",
+                cursor: "default",
                 background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.1) 0%, rgba(5, 5, 5, 0.92) 70%)",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
@@ -103,7 +103,7 @@ const GameOverScreen = ({ onRestart, onLeaderboard }) => {
                                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(239, 68, 68, 0.4)" }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleLeaderboardClick}
-                                className="px-10 py-4 border border-red-500/50 text-red-400 font-bold rounded-full text-sm uppercase cursor-pointer hover:bg-red-500/10 transition-all duration-300"
+                                className="px-10 py-4 border border-emerald-500/50 text-emerald-400 font-bold rounded-full text-sm uppercase cursor-pointer hover:bg-emerald-500/10 transition-all duration-300"
                                 style={{ fontFamily: "'Geist Mono', monospace", letterSpacing: "0.15em" }}
                             >
                                 Leaderboard
