@@ -24,7 +24,7 @@ const Contact = () => {
                         </h2>
                         <p className="mt-8 text-white/30 text-base leading-relaxed font-geist">
                             Have a project in mind? We'd love to hear about it. Drop us a
-                            message and we'll respond within 24 hours.
+                            message and we'll get back to you within 24 hours.
                         </p>
 
                         <div className="mt-10 space-y-4">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import MagneticButton from "./MagneticButton";
 
 const Footer = () => {
@@ -30,7 +30,7 @@ const Footer = () => {
                             <span className="text-black font-bold text-[10px] font-geist-mono">D.</span>
                         </div>
                         <span className="text-white/20 font-geist-mono text-xs">
-                            © 2026 designo
+                            © 2026 desainep
                         </span>
                     </div>
 
