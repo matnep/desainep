@@ -11,7 +11,7 @@ const generateShape = (radius, points) => {
 };
 
 const BOSS_THRESHOLD = 10;
-const BOSS_HP = 25;
+const BOSS_HP = 50;
 const PLAYER_LIVES = 3;
 
 // --- Procedural Sound Effects (Web Audio API) ---
