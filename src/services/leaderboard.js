@@ -16,10 +16,24 @@ const FALLBACK_LEADERBOARD = [
     { player_name: 'NEO', time_ms: 71000, rank: 5 },
 ];
 
+const MAX_ENTRIES = 10;
+
 const isConfigured = () => !!MASTER_KEY && !!BIN_ID;
 
+// Deduplicate: keep only the best (lowest) time per player name
+function deduplicateBest(entries) {
+    const best = new Map();
+    for (const entry of entries) {
+        const name = entry.player_name;
+        if (!best.has(name) || entry.time_ms < best.get(name).time_ms) {
+            best.set(name, entry);
+        }
+    }
+    return Array.from(best.values());
+}
+
 // Read the leaderboard from JSONBin
-export async function getLeaderboard(limit = 10) {
+export async function getLeaderboard(limit = MAX_ENTRIES) {
     if (!isConfigured()) {
         return getLocalLeaderboard(limit);
     }
@@ -31,8 +45,7 @@ export async function getLeaderboard(limit = 10) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        // data should be an array of { player_name, time_ms }
-        const entries = Array.isArray(data) ? data : [];
+        const entries = deduplicateBest(Array.isArray(data) ? data : []);
         return entries
             .sort((a, b) => a.time_ms - b.time_ms)
             .slice(0, limit)
@@ -43,7 +56,7 @@ export async function getLeaderboard(limit = 10) {
     }
 }
 
-// Submit a score — reads current data, appends, writes back
+// Submit a score — only keeps best time per player, max 10 entries
 export async function submitScore(playerName, timeMs) {
     if (!playerName || !timeMs) {
         throw new Error('Player name and time are required');
@@ -73,9 +86,10 @@ export async function submitScore(playerName, timeMs) {
         // 2. Append new entry
         entries.push(newEntry);
 
-        // 3. Keep only top 50 entries (sorted by time)
+        // 3. Deduplicate (best time per name), sort, keep top 10
+        entries = deduplicateBest(entries);
         entries.sort((a, b) => a.time_ms - b.time_ms);
-        entries = entries.slice(0, 50);
+        entries = entries.slice(0, MAX_ENTRIES);
 
         // 4. Write back to JSONBin
         const writeRes = await fetch(`${JSONBIN_BASE}/${BIN_ID}`, {
@@ -110,7 +124,7 @@ export function formatTime(ms) {
 
 // Get the current player's rank for a given time
 export async function getPlayerRank(timeMs) {
-    const leaderboard = await getLeaderboard(100);
+    const leaderboard = await getLeaderboard(MAX_ENTRIES);
     return leaderboard.filter(entry => entry.time_ms < timeMs).length + 1;
 }
 
@@ -118,7 +132,7 @@ export async function getPlayerRank(timeMs) {
 function getLocalLeaderboard(limit) {
     const stored = localStorage.getItem(STORAGE_KEY);
     const data = stored ? JSON.parse(stored) : FALLBACK_LEADERBOARD;
-    return data
+    return deduplicateBest(data)
         .sort((a, b) => a.time_ms - b.time_ms)
         .slice(0, limit)
         .map((entry, i) => ({ ...entry, rank: i + 1 }));
@@ -126,8 +140,12 @@ function getLocalLeaderboard(limit) {
 
 function submitLocal(entry) {
     const stored = localStorage.getItem(STORAGE_KEY);
-    const leaderboard = stored ? JSON.parse(stored) : [];
+    let leaderboard = stored ? JSON.parse(stored) : [];
     leaderboard.push({ ...entry, id: Date.now() });
+    leaderboard = deduplicateBest(leaderboard);
+    leaderboard.sort((a, b) => a.time_ms - b.time_ms);
+    leaderboard = leaderboard.slice(0, MAX_ENTRIES);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(leaderboard));
     return entry;
 }
+
