@@ -5,8 +5,7 @@ const generateShape = (radius, points) => {
     const verts = [];
     for (let i = 0; i < points; i++) {
         const angle = (i / points) * Math.PI * 2;
-        const r = radius * (0.6 + Math.random() * 0.4);
-        verts.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
+        verts.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius });
     }
     return verts;
 };
@@ -178,7 +177,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                 x, y, vx, vy, radius,
                 rotation: Math.random() * Math.PI * 2,
                 rotSpeed: (Math.random() - 0.5) * 0.03,
-                shape: generateShape(radius, 7 + Math.floor(Math.random() * 5)),
+                shape: generateShape(radius, 5 + Math.floor(Math.random() * 4)),
                 hp: radius > 28 ? 3 : radius > 20 ? 2 : 1,
                 maxHp: radius > 28 ? 3 : radius > 20 ? 2 : 1,
                 crackSeed: Math.floor(Math.random() * 4),
@@ -223,7 +222,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                         vx: Math.cos(angle) * 1.5 + ast.vx * 0.5, vy: Math.sin(angle) * 1.5 + ast.vy * 0.5,
                         radius: newR, rotation: Math.random() * Math.PI * 2,
                         rotSpeed: (Math.random() - 0.5) * 0.05,
-                        shape: generateShape(newR, 6 + Math.floor(Math.random() * 4)),
+                        shape: generateShape(newR, 4 + Math.floor(Math.random() * 3)),
                         hp: 1, maxHp: 1,
                         crackSeed: Math.floor(Math.random() * 4),
                     });
