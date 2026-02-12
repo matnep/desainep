@@ -44,7 +44,7 @@ const Features = () => {
             // services
                     </span>
                     <h2 className="mt-4 text-4xl md:text-6xl font-extrabold font-geist text-white leading-[0.95]">
-                        What we do<span className="text-emerald-400">.</span>
+                        What we do<span className="text-teal-400">.</span>
                     </h2>
                 </motion.div>
 

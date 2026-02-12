@@ -9,7 +9,7 @@ const plans = [
         price: "$2,999",
         period: "per project",
         desc: "For startups making their mark.",
-        color: "from-emerald-400 to-cyan-400",
+        color: "from-teal-400 to-cyan-400",
         features: [
             { name: "Single Page Website", included: true },
             { name: "Responsive Design", included: true },

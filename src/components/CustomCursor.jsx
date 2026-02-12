@@ -68,7 +68,8 @@ const CustomCursor = () => {
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-                    backgroundColor: "rgba(52, 211, 153, 0.9)",
+                    backgroundColor: "rgba(45, 200, 150, 0.9)",
+                    boxShadow: "0 0 8px rgba(45, 200, 150, 0.6), 0 0 12px rgba(45, 200, 150, 0.3)",
                     willChange: "transform",
                 }}
             />

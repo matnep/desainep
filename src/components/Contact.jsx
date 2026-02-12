@@ -30,7 +30,7 @@ const Contact = () => {
                         <div className="mt-10 space-y-4">
                             <a href="mailto:hello@designo.studio" className="flex items-center gap-3 text-white/30 hover:text-emerald-400 transition-colors font-geist-mono text-sm">
                                 <span className="text-white/10">→</span>
-                                hello@designo.studio
+                                hello@desainep.studio
                             </a>
                             <a href="tel:+15551234567" className="flex items-center gap-3 text-white/30 hover:text-emerald-400 transition-colors font-geist-mono text-sm">
                                 <span className="text-white/10">→</span>
