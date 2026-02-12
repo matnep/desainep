@@ -23,22 +23,22 @@ const Contact = () => {
                             something<span className="text-emerald-400">.</span>
                         </h2>
                         <p className="mt-8 text-white/30 text-base leading-relaxed font-geist">
-                            Have a project in mind? We'd love to hear about it. Drop us a
-                            message and we'll get back to you within 24 hours.
+                            Have a project in mind? I'd love to hear about it. Drop me a
+                            message and I'll get back to you within 24 hours.
                         </p>
 
                         <div className="mt-10 space-y-4">
-                            <a href="mailto:hello@designo.studio" className="flex items-center gap-3 text-white/30 hover:text-emerald-400 transition-colors font-geist-mono text-sm">
+                            <a href="mailto:hnifnasri@gmail.com" className="flex items-center gap-3 text-white/30 hover:text-emerald-400 transition-colors font-geist-mono text-sm">
                                 <span className="text-white/10">→</span>
-                                hello@desainep.studio
+                                hnifnasri@gmail.com
                             </a>
-                            <a href="tel:+15551234567" className="flex items-center gap-3 text-white/30 hover:text-emerald-400 transition-colors font-geist-mono text-sm">
+                            <a href="tel:+60134600508" className="flex items-center gap-3 text-white/30 hover:text-emerald-400 transition-colors font-geist-mono text-sm">
                                 <span className="text-white/10">→</span>
-                                +1 (555) 123-4567
+                                +60 13 460-0508
                             </a>
                             <span className="flex items-center gap-3 text-white/30 font-geist-mono text-sm">
                                 <span className="text-white/10">→</span>
-                                San Francisco, CA
+                                Alor Setar, Malaysia
                             </span>
                         </div>
                     </motion.div>
@@ -87,7 +87,7 @@ const Contact = () => {
                                 <textarea
                                     id="message"
                                     rows="4"
-                                    placeholder="Tell us about your project..."
+                                    placeholder="Tell me about your project..."
                                     className="w-full px-0 py-3 bg-transparent border-b border-white/10 text-white placeholder-white/15 focus:outline-none focus:border-emerald-400/50 transition-colors resize-none font-geist text-sm"
                                 />
                             </div>
