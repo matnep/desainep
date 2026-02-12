@@ -74,7 +74,7 @@ const About = () => {
               // about
                         </span>
                         <h2 className="mt-4 text-4xl md:text-6xl font-extrabold font-geist text-white leading-[0.95]">
-                            We don't do ordinary<span className="text-emerald-400">.</span>
+                            I don't do ordinary<span className="text-emerald-400">.</span>
                         </h2>
                     </motion.div>
 
@@ -86,17 +86,17 @@ const About = () => {
                         className="space-y-6"
                     >
                         <p className="text-white/40 text-lg leading-relaxed font-geist">
-                            We're a collective of designers, engineers, and dreamers who believe
-                            the digital world deserves more than templates and trends. Every project
-                            is a chance to create something that's never existed before.
+                            A solo creator building for a digital world that deserves more
+                            than templates and trends. I treat every project as a chance
+                            to craft something entirely new.
                         </p>
                         <p className="text-white/40 text-lg leading-relaxed font-geist">
-                            From brand identity to full-stack platforms, we build with intention,
+                            From brand identity to full-stack platforms, I build with intention,
                             obsess over details, and deliver work that moves people.
                         </p>
                         <div className="flex gap-4 pt-4">
                             <a href="#portfolio" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-sm font-semibold rounded-full hover:bg-white/90 transition-all font-geist">
-                                See our work
+                                See my work
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                                 </svg>

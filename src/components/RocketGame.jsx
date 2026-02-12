@@ -933,22 +933,22 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
             // --- HUD (positioned at edges, not overlapping center text) ---
             ctx.font = "bold 11px 'Geist Mono', monospace";
 
-            // Timer top-center
-            ctx.textAlign = "center";
-            ctx.fillStyle = "rgba(255,255,255,0.15)";
-            ctx.fillText(formatTime(s.elapsedMs), canvas.width / 2, 35);
-
-            // Score top-right
-            ctx.textAlign = "right";
-            ctx.fillStyle = "rgba(255,255,255,0.15)";
-            ctx.fillText(`${s.score}`, canvas.width - 20, 35);
-
             // Lives top-left
             ctx.textAlign = "left";
             for (let i = 0; i < PLAYER_LIVES; i++) {
                 ctx.fillStyle = i < s.lives ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.06)";
                 ctx.fillText("♥", 20 + i * 16, 35);
             }
+
+            // Timer under lives
+            ctx.textAlign = "left";
+            ctx.fillStyle = "rgba(255,255,255,0.15)";
+            ctx.fillText(formatTime(s.elapsedMs), 20, 52);
+
+            // Score top-right
+            ctx.textAlign = "right";
+            ctx.fillStyle = "rgba(255,255,255,0.15)";
+            ctx.fillText(`${s.score}`, canvas.width - 20, 35);
 
             // Boss countdown bottom-right
             if (!s.bossDefeated && s.gamePhase === "normal") {
