@@ -5,6 +5,7 @@ import MagneticButton from "./MagneticButton";
 import RocketGame from "./RocketGame";
 import VictoryScreen from "./VictoryScreen";
 import GameOverScreen from "./GameOverScreen";
+import NebulaStars from "./NebulaStars";
 
 const SplitText = ({ text, lineIndex }) => {
     return (
@@ -43,14 +44,12 @@ const Hero = () => {
     }, []);
 
     return (
-        <section id="home" className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f1a] cursor-none">
+        <section id="home" className='relative w-full min-h-screen flex items-center justify-center overflow-hidden nebula-bg'>
             {/* Background elements */}
             <div className="absolute inset-0 pointer-events-none">
                 <ParticleField />
-                <div className="absolute top-[-10%] left-[-15%] w-[500px] h-[500px] rounded-full opacity-20"
-                    style={{ background: "radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%)" }} />
-                <div className="absolute bottom-[-10%] right-[-15%] w-[500px] h-[500px] rounded-full opacity-20"
-                    style={{ background: "radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)" }} />
+                <div className="absolute top-1/2 left-1/4 w-64 h-64 rounded-full bg-white/20 blur-sm animate-pulse" style={{ animationDelay: '0s' }}></div>
+                <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full bg-white/20 blur-sm animate-pulse" style={{ animationDelay: '2s' }}></div>
             </div>
 
             {/* Game Layer */}
