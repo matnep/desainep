@@ -40,10 +40,11 @@ const GameOverScreen = ({ onRestart, onLeaderboard }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 flex flex-col items-center justify-center cursor-default"
+            className="absolute inset-0 flex flex-col items-center justify-center"
             style={{
                 zIndex: 9999,
-                background: "radial-gradient(ellipse at center, rgba(26, 101, 83, 0.1) 0%, rgba(5, 5, 5, 0.92) 70%)",
+                cursor: "auto",
+                background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.1) 0%, rgba(5, 5, 5, 0.92) 70%)",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
             }}
@@ -64,8 +65,8 @@ const GameOverScreen = ({ onRestart, onLeaderboard }) => {
                             className="text-5xl md:text-7xl font-black uppercase tracking-tight"
                             style={{
                                 fontFamily: "'Geist Mono', monospace",
-                                color: "rgba(45, 200, 150, 0.9)",
-                                textShadow: "0 0 40px rgba(45, 200, 150, 0.5), 0 0 80px rgba(45, 200, 150, 0.2)",
+                                color: "rgba(239, 68, 68, 0.9)",
+                                textShadow: "0 0 40px rgba(239, 68, 68, 0.5), 0 0 80px rgba(239, 68, 68, 0.2)",
                             }}
                         >
                             ⚠ GAME OVER ⚠
@@ -86,7 +87,7 @@ const GameOverScreen = ({ onRestart, onLeaderboard }) => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 1 }}
-                                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(45, 200, 150, 0.4)" }}
+                                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(239, 68, 68, 0.4)" }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={onRestart}
                                 className="px-10 py-4 border border-red-500/50 text-red-400 font-bold rounded-full text-sm uppercase cursor-pointer hover:bg-red-500/10 transition-all duration-300"
@@ -99,13 +100,13 @@ const GameOverScreen = ({ onRestart, onLeaderboard }) => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 1.2 }}
-                                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(45, 200, 150, 0.4)" }}
+                                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(239, 68, 68, 0.4)" }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleLeaderboardClick}
-                                className="px-10 py-4 border border-teal-500/50 text-teal-400 font-bold rounded-full text-sm uppercase cursor-pointer hover:bg-teal-500/10 transition-all duration-300"
+                                className="px-10 py-4 border border-red-500/50 text-red-400 font-bold rounded-full text-sm uppercase cursor-pointer hover:bg-red-500/10 transition-all duration-300"
                                 style={{ fontFamily: "'Geist Mono', monospace", letterSpacing: "0.15em" }}
                             >
-                                🏆 Leaderboard
+                                Leaderboard
                             </motion.button>
                         </div>
                     </motion.div>
