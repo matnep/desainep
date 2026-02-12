@@ -70,17 +70,20 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                             exit={{ opacity: 0, y: -20 }}
                             className="text-center"
                         >
+                            {/* Replaced Emoji with Animated Text */}
                             <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                                className="text-7xl mb-6"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-emerald-400 font-geist-mono text-sm uppercase tracking-[0.4em] mb-2"
                             >
-                                🏆
+                                — Congrats! —
                             </motion.div>
-                            <h2 className="text-4xl md:text-5xl font-black font-geist text-white uppercase mb-3">
+
+                            <h2 className="text-4xl md:text-5xl font-black font-geist text-white uppercase mb-6">
                                 Boss Defeated!
                             </h2>
+
                             <p className="text-white/40 text-sm font-geist-mono mb-1">
                                 COMPLETION TIME
                             </p>
