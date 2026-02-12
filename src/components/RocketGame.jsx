@@ -959,7 +959,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
             {/* Leaderboard Modal */}
             {showLeaderboard && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    className="absolute inset-0 z-50 flex items-center justify-center"
                     style={{ background: "rgba(0, 0, 0, 0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
                     onClick={() => setShowLeaderboard(false)}
                 >
@@ -977,9 +977,6 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                             </button>
                         </div>
 
-                        <p className="text-white/20 text-xs text-center mb-6 font-mono">
-                            FASTEST BOSS KILL
-                        </p>
 
                         <div className="space-y-2 max-h-80 overflow-y-auto">
                             {loadingLeaderboard ? (
