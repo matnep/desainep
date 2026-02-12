@@ -73,70 +73,64 @@ const Portfolio = () => {
                 </motion.div>
             </div>
 
-            {/* Marquee Container with Gradient Fades */}
-            <div className="relative group">
-                {/* Gradient Masks */}
-                <div className="absolute inset-y-0 left-0 w-24 md:w-40 bg-gradient-to-r from-[#050505] to-transparent z-20 pointer-events-none" />
-                <div className="absolute inset-y-0 right-0 w-24 md:w-40 bg-gradient-to-l from-[#050505] to-transparent z-20 pointer-events-none" />
+            {/* Marquee Container (Gradients Removed) */}
+            <div className="relative overflow-hidden group">
+                <div
+                    className="flex gap-6 animate-marquee group-hover:[animation-play-state:paused]"
+                    style={{ width: "max-content" }}
+                >
+                    {duplicatedProjects.map((project, i) => (
+                        <div
+                            key={`${project.title}-${i}`}
+                            className="w-[340px] md:w-[420px] shrink-0"
+                        >
+                            <TiltCard className="group/card rounded-2xl overflow-hidden aspect-[4/5] bg-[#111] relative cursor-pointer border border-white/5">
+                                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20 group-hover/card:opacity-40 transition-opacity duration-700`} />
 
-                <div className="relative flex overflow-hidden">
-                    <div
-                        className="flex gap-6 animate-marquee group-hover:[animation-play-state:paused]"
-                        style={{ width: "max-content" }}
-                    >
-                        {duplicatedProjects.map((project, i) => (
-                            <div
-                                key={`${project.title}-${i}`}
-                                className="w-[340px] md:w-[420px] shrink-0"
-                            >
-                                <TiltCard className="group/card rounded-2xl overflow-hidden aspect-[4/5] bg-[#111] relative cursor-pointer">
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20 group-hover/card:opacity-40 transition-opacity duration-700`} />
+                                <div
+                                    className="absolute inset-0 opacity-10"
+                                    style={{
+                                        backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)",
+                                        backgroundSize: "20px 20px",
+                                    }}
+                                />
 
-                                    <div
-                                        className="absolute inset-0 opacity-10"
-                                        style={{
-                                            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)",
-                                            backgroundSize: "20px 20px",
-                                        }}
-                                    />
+                                <span
+                                    className="absolute top-6 right-8 text-[120px] md:text-[160px] font-black font-geist text-transparent leading-none"
+                                    style={{ WebkitTextStroke: "1px rgba(255,255,255,0.04)" }}
+                                >
+                                    {String((i % projects.length) + 1).padStart(2, "0")}
+                                </span>
 
-                                    <span
-                                        className="absolute top-6 right-8 text-[120px] md:text-[160px] font-black font-geist text-transparent leading-none"
-                                        style={{ WebkitTextStroke: "1px rgba(255,255,255,0.04)" }}
-                                    >
-                                        {String((i % projects.length) + 1).padStart(2, "0")}
-                                    </span>
+                                <div className="absolute inset-0 flex flex-col justify-end p-8 text-left">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-md text-white/40 text-[10px] font-geist-mono uppercase tracking-wider">
+                                            {project.category}
+                                        </span>
+                                        <span className="text-white/20 text-[10px] font-geist-mono">
+                                            {project.year}
+                                        </span>
+                                    </div>
 
-                                    <div className="absolute inset-0 flex flex-col justify-end p-8 text-left">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-md text-white/40 text-[10px] font-geist-mono uppercase tracking-wider">
-                                                {project.category}
-                                            </span>
-                                            <span className="text-white/20 text-[10px] font-geist-mono">
-                                                {project.year}
-                                            </span>
-                                        </div>
+                                    <h3 className="text-3xl md:text-4xl font-bold font-geist text-white mb-3">
+                                        {project.title}
+                                    </h3>
 
-                                        <h3 className="text-3xl md:text-4xl font-bold font-geist text-white mb-3">
-                                            {project.title}
-                                        </h3>
+                                    <p className="text-white/0 group-hover/card:text-white/40 text-sm font-geist leading-relaxed transition-all duration-500 translate-y-4 group-hover/card:translate-y-0 line-clamp-2">
+                                        {project.desc}
+                                    </p>
 
-                                        <p className="text-white/0 group-hover/card:text-white/40 text-sm font-geist leading-relaxed transition-all duration-500 translate-y-4 group-hover/card:translate-y-0 line-clamp-2">
-                                            {project.desc}
-                                        </p>
-
-                                        <div className="mt-4 opacity-0 group-hover/card:opacity-100 transition-all duration-500 translate-y-4 group-hover/card:translate-y-0">
-                                            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
-                                                </svg>
-                                            </div>
+                                    <div className="mt-4 opacity-0 group-hover/card:opacity-100 transition-all duration-500 translate-y-4 group-hover/card:translate-y-0">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
+                                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                                            </svg>
                                         </div>
                                     </div>
-                                </TiltCard>
-                            </div>
-                        ))}
-                    </div>
+                                </div>
+                            </TiltCard>
+                        </div>
+                    ))}
                 </div>
             </div>
 
@@ -154,7 +148,7 @@ const Portfolio = () => {
                     100% { transform: translateX(-50%); }
                 }
                 .animate-marquee {
-                    animation: marquee 60s linear infinite;
+                    animation: marquee 80s linear infinite;
                 }
             `}</style>
         </section>
