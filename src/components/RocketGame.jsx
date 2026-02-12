@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
+import { getLeaderboard, formatTime } from "../services/leaderboard";
 
 const generateShape = (radius, points) => {
     const verts = [];
@@ -78,6 +79,9 @@ const playBossHitSound = () => {
 
 const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
     const canvasRef = useRef(null);
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
+    const [leaderboard, setLeaderboard] = useState([]);
+    const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
     const state = useRef({
         mouse: { x: 0, y: 0 },
         rocket: { x: 0, y: 0, angle: -Math.PI / 2 },
@@ -101,6 +105,18 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
         startTime: Date.now(),
         elapsedMs: 0,
     });
+
+    const loadLeaderboard = async () => {
+        setLoadingLeaderboard(true);
+        try {
+            const data = await getLeaderboard(10);
+            setLeaderboard(data);
+        } catch (err) {
+            console.error("Failed to load leaderboard:", err);
+        } finally {
+            setLoadingLeaderboard(false);
+        }
+    };
 
     const shootLaser = useCallback(() => {
         const s = state.current;
@@ -931,11 +947,86 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
     }, [textContainerRef, shootLaser, onBossDefeated, onGameOver]);
 
     return (
-        <canvas
-            ref={canvasRef}
-            className="absolute inset-0 z-30"
-            style={{ cursor: "none" }}
-        />
+        <>
+            {/* Leaderboard Button */}
+            <button
+                onClick={() => { if (!showLeaderboard) loadLeaderboard(); setShowLeaderboard(!showLeaderboard); }}
+                className="absolute top-4 right-4 z-40 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
+                style={{ backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
+            >
+                🏆
+            </button>
+
+            {/* Leaderboard Modal */}
+            {showLeaderboard && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    style={{ background: "rgba(0, 0, 0, 0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
+                    onClick={() => setShowLeaderboard(false)}
+                >
+                    <div
+                        className="w-full max-w-md mx-4 bg-[#0a0a0f] border border-white/10 rounded-2xl p-6"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-bold uppercase text-white font-mono">Leaderboard</h2>
+                            <button
+                                onClick={() => setShowLeaderboard(false)}
+                                className="text-white/30 text-xs uppercase hover:text-white/60 transition-colors font-mono"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <p className="text-white/20 text-xs text-center mb-6 font-mono">
+                            FASTEST BOSS KILL
+                        </p>
+
+                        <div className="space-y-2 max-h-80 overflow-y-auto">
+                            {loadingLeaderboard ? (
+                                <div className="text-center py-8">
+                                    <div className="inline-block w-6 h-6 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+                                </div>
+                            ) : leaderboard.length > 0 ? (
+                                leaderboard.map((entry, i) => (
+                                    <div
+                                        key={entry.id || i}
+                                        className="flex items-center justify-between px-5 py-3 rounded-xl bg-white/[0.03] border border-white/5"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <span
+                                                className="font-mono text-sm font-bold w-6"
+                                                style={{
+                                                    color: i === 0 ? "#facc15" : i === 1 ? "#d4d4d8" : i === 2 ? "#b45309" : "rgba(255,255,255,0.2)"
+                                                }}
+                                            >
+                                                {entry.rank || i + 1}.
+                                            </span>
+                                            <span className="font-mono text-white text-sm font-bold uppercase">
+                                                {entry.player_name}
+                                            </span>
+                                        </div>
+                                        <span className="font-mono text-sm text-white/50">
+                                            {formatTime(entry.time_ms)}
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-center text-white/20 text-sm py-8 font-mono">
+                                    No entries yet. Be the first!
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <canvas
+                ref={canvasRef}
+                className="absolute inset-0 z-30"
+                style={{ cursor: "none" }}
+            />
+        </>
     );
 };
 
