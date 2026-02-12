@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getLeaderboard, submitScore, formatTime, getPlayerRank } from "../services/leaderboard";
 
 const VictoryScreen = ({ timeMs, onClose }) => {
-    const [phase, setPhase] = useState("victory");
+    // If timeMs is 0 (triggered by View_Scores), start at leaderboard phase
+    const [phase, setPhase] = useState(timeMs === 0 ? "leaderboard" : "victory");
     const [name, setName] = useState("");
     const [board, setBoard] = useState([]);
     const [playerRank, setPlayerRank] = useState(null);
@@ -18,8 +19,11 @@ const VictoryScreen = ({ timeMs, onClose }) => {
         try {
             const data = await getLeaderboard(10);
             setBoard(data);
-            const rank = await getPlayerRank(timeMs);
-            setPlayerRank(rank);
+            // Only fetch rank if there is a valid time
+            if (timeMs > 0) {
+                const rank = await getPlayerRank(timeMs);
+                setPlayerRank(rank);
+            }
         } catch (err) {
             console.error("Failed to load leaderboard:", err);
         } finally {
@@ -125,15 +129,25 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                                     <span>Time:</span>
                                     <span className="text-emerald-400 font-bold">{formatTime(timeMs)}</span>
                                 </div>
-                                <motion.button
-                                    type="submit"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    disabled={loading || !name.trim()}
-                                    className="w-full px-8 py-4 bg-white text-black font-bold font-geist rounded-full text-sm uppercase tracking-wider cursor-pointer hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? "Submitting..." : "Submit"}
-                                </motion.button>
+                                <div className="space-y-3 pt-2">
+                                    <motion.button
+                                        type="submit"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        disabled={loading || !name.trim()}
+                                        className="w-full px-8 py-4 bg-white text-black font-bold font-geist rounded-full text-sm uppercase tracking-wider cursor-pointer hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {loading ? "Submitting..." : "Submit"}
+                                    </motion.button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setPhase("leaderboard")}
+                                        className="w-full py-2 text-white/20 hover:text-white/50 text-[10px] font-geist-mono uppercase tracking-[0.3em] transition-colors"
+                                    >
+                                        [ Skip ]
+                                    </button>
+                                </div>
                             </form>
                         </motion.div>
                     )}
@@ -151,7 +165,7 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                             <p className="text-white/20 text-xs font-geist-mono text-center mb-6">
                                 FASTEST BOSS KILL
                             </p>
-                            <div className="space-y-2 mb-8 max-h-64 overflow-y-auto">
+                            <div className="space-y-2 mb-8 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
                                 {board.map((entry, i) => {
                                     const isMe = entry.player_name === name.trim().toUpperCase() && entry.time_ms === timeMs;
                                     return (
