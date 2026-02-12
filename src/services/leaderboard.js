@@ -1,6 +1,15 @@
 const API_BASE = 'https://simpleboards.dev/api';
+const CORS_PROXY = 'https://corsproxy.io/?url=';
 const API_KEY = import.meta.env.VITE_SIMPLEBOARDS_API_KEY || '';
 const LEADERBOARD_ID = import.meta.env.VITE_SIMPLEBOARDS_LEADERBOARD_ID || '';
+
+// Use proxy in production (GitHub Pages), direct in localhost
+const proxied = (url) => {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return url;
+    }
+    return `${CORS_PROXY}${encodeURIComponent(url)}`;
+};
 
 // Fallback localStorage for when SimpleBoards is not configured
 const STORAGE_KEY = 'designo-leaderboard';
@@ -27,7 +36,7 @@ export async function getLeaderboard(limit = 10) {
 
     try {
         const res = await fetch(
-            `${API_BASE}/leaderboards/${LEADERBOARD_ID}/entries`,
+            proxied(`${API_BASE}/leaderboards/${LEADERBOARD_ID}/entries`),
             { headers: { 'x-api-key': API_KEY } }
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -80,7 +89,7 @@ export async function submitScore(playerName, timeMs) {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/entries`, {
+        const res = await fetch(proxied(`${API_BASE}/entries`), {
             method: 'POST',
             headers: {
                 'x-api-key': API_KEY,
