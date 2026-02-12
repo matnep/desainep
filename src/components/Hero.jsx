@@ -44,12 +44,10 @@ const Hero = () => {
     }, []);
 
     return (
-        <section id="home" className='relative w-full min-h-screen flex items-center justify-center overflow-hidden nebula-bg'>
+        <section id="home" className='relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f1a]'>
             {/* Background elements */}
             <div className="absolute inset-0 pointer-events-none">
                 <ParticleField />
-                <div className="absolute top-1/2 left-1/4 w-64 h-64 rounded-full bg-white/20 blur-sm animate-pulse" style={{ animationDelay: '0s' }}></div>
-                <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full bg-white/20 blur-sm animate-pulse" style={{ animationDelay: '2s' }}></div>
             </div>
 
             {/* Game Layer */}
