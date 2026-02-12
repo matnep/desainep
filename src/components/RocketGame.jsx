@@ -522,70 +522,64 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                     const crackCount = 2 + Math.floor(intensity * 5);
 
                     if (pattern === 0) {
-                        // Branching fractures from edges toward center
+                        // Symmetrical radial lines from center to edge vertices
                         for (let c = 0; c < crackCount; c++) {
-                            const sv = c % a.shape.length;
-                            const ev = (sv + Math.floor(a.shape.length / 3)) % a.shape.length;
-                            ctx.beginPath();
-                            const sx = a.shape[sv].x * 0.8;
-                            const sy = a.shape[sv].y * 0.8;
-                            const mx = (a.shape[sv].x + a.shape[ev].x) * 0.2;
-                            const my = (a.shape[sv].y + a.shape[ev].y) * 0.2;
-                            ctx.moveTo(sx, sy);
-                            ctx.quadraticCurveTo(mx + (c % 2 ? 5 : -5), my + (c % 3 ? -4 : 4), 0, 0);
-                            ctx.stroke();
-                            // Branch fork
-                            if (intensity > 0.4) {
-                                ctx.beginPath();
-                                ctx.moveTo(mx, my);
-                                ctx.lineTo(a.shape[(sv + 1) % a.shape.length].x * 0.5, a.shape[(sv + 1) % a.shape.length].y * 0.5);
-                                ctx.stroke();
-                            }
-                        }
-                    } else if (pattern === 1) {
-                        // Star-burst: lines radiating from center
-                        for (let c = 0; c < crackCount + 1; c++) {
-                            const angle = (c / (crackCount + 1)) * Math.PI * 2;
+                            const angle = (c / crackCount) * Math.PI * 2;
                             const len = a.radius * (0.4 + intensity * 0.5);
                             ctx.beginPath();
                             ctx.moveTo(0, 0);
                             ctx.lineTo(Math.cos(angle) * len, Math.sin(angle) * len);
                             ctx.stroke();
                         }
-                    } else if (pattern === 2) {
-                        // Concentric ring fragments
-                        for (let ring = 1; ring <= Math.ceil(intensity * 3); ring++) {
-                            const r = a.radius * (ring * 0.25);
-                            const arcStart = (ring * 1.2) % (Math.PI * 2);
-                            const arcLen = Math.PI * (0.4 + intensity * 0.6);
+                    } else if (pattern === 1) {
+                        // Symmetrical concentric rings
+                        const ringCount = Math.ceil(intensity * 3);
+                        for (let ring = 1; ring <= ringCount; ring++) {
+                            const r = a.radius * (ring / (ringCount + 1));
                             ctx.beginPath();
-                            ctx.arc(0, 0, r, arcStart, arcStart + arcLen);
+                            ctx.arc(0, 0, r, 0, Math.PI * 2);
                             ctx.stroke();
-                            // Radial connector
+                        }
+                    } else if (pattern === 2) {
+                        // Symmetrical star: radials + inner ring
+                        const arms = crackCount + 2;
+                        for (let c = 0; c < arms; c++) {
+                            const angle = (c / arms) * Math.PI * 2;
+                            const len = a.radius * (0.5 + intensity * 0.4);
                             ctx.beginPath();
-                            ctx.moveTo(Math.cos(arcStart) * r, Math.sin(arcStart) * r);
-                            ctx.lineTo(Math.cos(arcStart) * (r + a.radius * 0.2), Math.sin(arcStart) * (r + a.radius * 0.2));
+                            ctx.moveTo(0, 0);
+                            ctx.lineTo(Math.cos(angle) * len, Math.sin(angle) * len);
+                            ctx.stroke();
+                        }
+                        // Inner connecting ring
+                        if (intensity > 0.3) {
+                            const ir = a.radius * 0.35;
+                            ctx.beginPath();
+                            ctx.arc(0, 0, ir, 0, Math.PI * 2);
                             ctx.stroke();
                         }
                     } else {
-                        // Zigzag lightning cracks
-                        for (let c = 0; c < Math.ceil(crackCount / 2); c++) {
-                            const sv = (c * 2) % a.shape.length;
+                        // Symmetrical web: radials + concentric ring
+                        const spokes = crackCount + 1;
+                        const len = a.radius * (0.5 + intensity * 0.4);
+                        for (let c = 0; c < spokes; c++) {
+                            const angle = (c / spokes) * Math.PI * 2;
                             ctx.beginPath();
-                            const startX = a.shape[sv].x * 0.7;
-                            const startY = a.shape[sv].y * 0.7;
-                            ctx.moveTo(startX, startY);
-                            const steps = 3 + Math.floor(intensity * 3);
-                            let px = startX, py = startY;
-                            for (let s = 0; s < steps; s++) {
-                                const t = (s + 1) / steps;
-                                const nx = startX * (1 - t);
-                                const ny = startY * (1 - t);
-                                const jitter = a.radius * 0.15;
-                                px = nx + ((s % 2) * 2 - 1) * jitter;
-                                py = ny + ((s % 2) * 2 - 1) * jitter * 0.5;
-                                ctx.lineTo(px, py);
+                            ctx.moveTo(Math.cos(angle) * a.radius * 0.15, Math.sin(angle) * a.radius * 0.15);
+                            ctx.lineTo(Math.cos(angle) * len, Math.sin(angle) * len);
+                            ctx.stroke();
+                        }
+                        // Connecting polygon at midpoint
+                        if (intensity > 0.4) {
+                            const mr = a.radius * 0.4;
+                            ctx.beginPath();
+                            for (let c = 0; c < spokes; c++) {
+                                const angle = (c / spokes) * Math.PI * 2;
+                                const px = Math.cos(angle) * mr;
+                                const py = Math.sin(angle) * mr;
+                                c === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
                             }
+                            ctx.closePath();
                             ctx.stroke();
                         }
                     }
