@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import TiltCard from "./TiltCard";
 
@@ -47,8 +47,13 @@ const projects = [
     },
 ];
 
+// Double the array to create the infinite loop effect
+const duplicatedProjects = [...projects, ...projects];
+
 const Portfolio = () => {
-    const containerRef = useRef(null);
+    const containerRef = React.useRef(null);
+    const [isPaused, setIsPaused] = useState(false);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start end", "end start"],
@@ -57,11 +62,11 @@ const Portfolio = () => {
     const headingY = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
     return (
-        <section id="portfolio" className="py-24 md:py-32 bg-[#050505]" ref={containerRef}>
+        <section id="portfolio" className="py-24 md:py-32 bg-[#050505] overflow-hidden" ref={containerRef}>
             <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-16">
                 <motion.div style={{ y: headingY }}>
                     <span className="text-white/30 font-geist-mono text-xs uppercase tracking-[0.3em]">
-            // selected work
+                        // selected work
                     </span>
                     <h2 className="mt-4 text-4xl md:text-6xl font-extrabold font-geist text-white leading-[0.95]">
                         Featured projects<span className="text-emerald-400">.</span>
@@ -69,21 +74,33 @@ const Portfolio = () => {
                 </motion.div>
             </div>
 
-            {/* Horizontal scroll strip with TiltCards */}
-            <div className="overflow-x-auto scrollbar-hide pb-8">
-                <div className="flex gap-6 px-6 lg:px-8" style={{ width: "max-content" }}>
-                    {projects.map((project, i) => (
-                        <motion.div
-                            key={project.title}
-                            initial={{ opacity: 0, x: 40 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.6, delay: i * 0.08 }}
+            {/* Marquee Container */}
+            <div className="relative flex overflow-hidden group">
+                <motion.div
+                    className="flex gap-6 px-3"
+                    animate={{
+                        x: isPaused ? undefined : ["0%", "-50%"],
+                    }}
+                    transition={{
+                        x: {
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            duration: 30, // Adjust speed here (higher = slower)
+                            ease: "linear",
+                        },
+                    }}
+                    onMouseEnter={() => setIsPaused(true)}
+                    onMouseLeave={() => setIsPaused(false)}
+                    style={{ width: "max-content" }}
+                >
+                    {duplicatedProjects.map((project, i) => (
+                        <div
+                            key={`${project.title}-${i}`}
                             className="w-[340px] md:w-[420px] shrink-0"
                         >
-                            <TiltCard className="group rounded-2xl overflow-hidden aspect-[4/5] bg-[#111] relative cursor-pointer">
+                            <TiltCard className="group/card rounded-2xl overflow-hidden aspect-[4/5] bg-[#111] relative cursor-pointer">
                                 {/* Gradient bg */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-700`} />
+                                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20 group-hover/card:opacity-40 transition-opacity duration-700`} />
 
                                 {/* Dot pattern */}
                                 <div
@@ -99,7 +116,7 @@ const Portfolio = () => {
                                     className="absolute top-6 right-8 text-[120px] md:text-[160px] font-black font-geist text-transparent leading-none"
                                     style={{ WebkitTextStroke: "1px rgba(255,255,255,0.04)" }}
                                 >
-                                    {String(i + 1).padStart(2, "0")}
+                                    {String((i % projects.length) + 1).padStart(2, "0")}
                                 </span>
 
                                 {/* Content at bottom */}
@@ -117,11 +134,11 @@ const Portfolio = () => {
                                         {project.title}
                                     </h3>
 
-                                    <p className="text-white/0 group-hover:text-white/40 text-sm font-geist leading-relaxed transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                                    <p className="text-white/0 group-hover/card:text-white/40 text-sm font-geist leading-relaxed transition-all duration-500 translate-y-4 group-hover/card:translate-y-0">
                                         {project.desc}
                                     </p>
 
-                                    <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                                    <div className="mt-4 opacity-0 group-hover/card:opacity-100 transition-all duration-500 translate-y-4 group-hover/card:translate-y-0">
                                         <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
                                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
@@ -130,16 +147,16 @@ const Portfolio = () => {
                                     </div>
                                 </div>
                             </TiltCard>
-                        </motion.div>
+                        </div>
                     ))}
-                </div>
+                </motion.div>
             </div>
 
-            {/* Scroll hint */}
-            <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-8 flex items-center gap-3">
+            {/* Visual Footer for Marquee */}
+            <div className="max-w-7xl mx-auto px-6 lg:px-8 mt-12 flex items-center gap-3">
                 <div className="h-px flex-1 bg-white/5" />
                 <span className="text-white/15 text-[10px] font-geist-mono tracking-widest uppercase">
-                    Drag or scroll →
+                    Autoscroll Active • Hover to pause
                 </span>
                 <div className="h-px w-16 bg-gradient-to-r from-white/5 to-transparent" />
             </div>
