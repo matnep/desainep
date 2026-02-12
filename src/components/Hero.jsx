@@ -141,18 +141,6 @@ const Hero = () => {
                                     >
                                         ↻ Initialize_Restart
                                     </motion.button>
-
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => {
-                                            setShowGameOver(false);
-                                            setVictory(0);
-                                        }}
-                                        className="px-6 py-3 bg-white/5 border border-white/10 text-white/60 font-bold rounded-full text-[10px] md:text-xs uppercase cursor-pointer hover:bg-white/10 hover:text-white transition-all duration-300 font-['Geist_Mono'] tracking-widest"
-                                    >
-                                        ◆ View_Scores
-                                    </motion.button>
                                 </div>
                             </div>
                         </div>
