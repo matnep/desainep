@@ -532,16 +532,23 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                             ctx.stroke();
                         }
                     } else if (pattern === 1) {
-                        // Symmetrical concentric rings
+                        // Concentric polygons matching asteroid shape
                         const ringCount = Math.ceil(intensity * 3);
+                        const sides = a.shape.length;
                         for (let ring = 1; ring <= ringCount; ring++) {
                             const r = a.radius * (ring / (ringCount + 1));
                             ctx.beginPath();
-                            ctx.arc(0, 0, r, 0, Math.PI * 2);
+                            for (let v = 0; v < sides; v++) {
+                                const angle = (v / sides) * Math.PI * 2;
+                                const px = Math.cos(angle) * r;
+                                const py = Math.sin(angle) * r;
+                                v === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                            }
+                            ctx.closePath();
                             ctx.stroke();
                         }
                     } else if (pattern === 2) {
-                        // Symmetrical star: radials + inner ring
+                        // Symmetrical star: radials + inner polygon
                         const arms = crackCount + 2;
                         for (let c = 0; c < arms; c++) {
                             const angle = (c / arms) * Math.PI * 2;
@@ -551,11 +558,17 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                             ctx.lineTo(Math.cos(angle) * len, Math.sin(angle) * len);
                             ctx.stroke();
                         }
-                        // Inner connecting ring
+                        // Inner connecting polygon
                         if (intensity > 0.3) {
                             const ir = a.radius * 0.35;
                             ctx.beginPath();
-                            ctx.arc(0, 0, ir, 0, Math.PI * 2);
+                            for (let c = 0; c < arms; c++) {
+                                const angle = (c / arms) * Math.PI * 2;
+                                const px = Math.cos(angle) * ir;
+                                const py = Math.sin(angle) * ir;
+                                c === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                            }
+                            ctx.closePath();
                             ctx.stroke();
                         }
                     } else {
