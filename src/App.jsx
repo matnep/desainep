@@ -1,13 +1,16 @@
+import { lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Features from "./components/Features";
-import About from "./components/About";
-import Portfolio from "./components/Portfolio";
-import Testimonials from "./components/Testimonials";
-import Pricing from "./components/Pricing";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
 import CustomCursor from "./components/CustomCursor";
+
+// Lazy load sections below the fold
+const Features = lazy(() => import("./components/Features"));
+const About = lazy(() => import("./components/About"));
+const Portfolio = lazy(() => import("./components/Portfolio"));
+const Testimonials = lazy(() => import("./components/Testimonials"));
+const Pricing = lazy(() => import("./components/Pricing"));
+const Contact = lazy(() => import("./components/Contact"));
+const Footer = lazy(() => import("./components/Footer"));
 
 function App() {
   return (
@@ -15,13 +18,15 @@ function App() {
       <CustomCursor />
       <Navbar />
       <Hero />
-      <Features />
-      <About />
-      <Portfolio />
-      <Testimonials />
-      <Pricing />
-      <Contact />
-      <Footer />
+      <Suspense fallback={null}>
+        <Features />
+        <About />
+        <Portfolio />
+        <Testimonials />
+        <Pricing />
+        <Contact />
+        <Footer />
+      </Suspense>
     </div>
   );
 }

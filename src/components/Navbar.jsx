@@ -37,7 +37,7 @@ const Navbar = () => {
                     y: visible ? 0 : -60,
                 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="fixed top-0 left-0 w-full z-50 flex justify-center pt-4 px-4"
+                className="fixed top-0 left-0 w-full z-[70] flex justify-center pt-4 px-4"
                 style={{ pointerEvents: visible ? "auto" : "none" }}
             >
                 <nav className="flex items-center justify-between gap-2 px-3 py-2 rounded-2xl border bg-white/10 backdrop-blur-2xl border-white/15 shadow-2xl shadow-black/20 w-full max-w-3xl">

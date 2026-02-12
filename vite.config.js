@@ -6,4 +6,19 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   base: '/designo/',
   plugins: [react(), tailwindcss()],
+  build: {
+    cssMinify: 'lightningcss',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'framer-motion': ['framer-motion'],
+          'game': [
+            './src/components/RocketGame.jsx',
+            './src/components/VictoryScreen.jsx',
+            './src/components/GameOverScreen.jsx'
+          ]
+        }
+      }
+    }
+  }
 })
