@@ -89,7 +89,7 @@ const Hero = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
-                    className="pointer-events-auto"
+                    className="flex items-center gap-4 pointer-events-auto flex-wrap"
                 >
                     <MagneticButton>
                         <a
@@ -99,14 +99,6 @@ const Hero = () => {
                             Start Project
                         </a>
                     </MagneticButton>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.3 }}
-                    className="mt-10 flex gap-4 pointer-events-auto"
-                >
                     <MagneticButton className="cursor-pointer px-8 py-4 bg-white/5 text-white/60 border border-white/10 font-['Geist_Mono'] font-bold uppercase text-sm tracking-wider rounded-full flex items-center gap-2 hover:bg-white/10 hover:text-white transition-all duration-300">
                         <a href="#features" className="flex items-center gap-2">
                             Explore Services
