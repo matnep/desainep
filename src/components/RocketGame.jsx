@@ -103,6 +103,13 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
         // Timer
         startTime: Date.now(),
         elapsedMs: 0,
+        stats: {
+            shotsFired: 0,
+            shotsHitAsteroids: 0,
+            shotsHitBoss: 0,
+            asteroidsDestroyed: 0,
+            deaths: 0,
+        },
     });
 
     const loadLeaderboard = async () => {
@@ -120,6 +127,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
     const shootLaser = useCallback(() => {
         const s = state.current;
         if (s.dead || s.gameOver) return;
+        s.stats.shotsFired++;
         const speed = 16;
         const noseX = s.rocket.x + Math.cos(s.rocket.angle) * 18;
         const noseY = s.rocket.y + Math.sin(s.rocket.angle) * 18;
@@ -230,6 +238,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
             }
             s.asteroids.splice(idx, 1);
             s.score++;
+            s.stats.asteroidsDestroyed++;
             if (s.score >= BOSS_THRESHOLD && !s.boss && !s.bossDefeated && s.gamePhase === "normal") {
                 s.gamePhase = "warning";
                 s.bossWarning = 180;
@@ -243,6 +252,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
             playExplosionSound(2);
             s.screenShake.intensity = 15;
             s.lives--;
+            s.stats.deaths++;
             s.dead = true;
             if (s.lives <= 0) {
                 s.gameOver = true;
@@ -830,6 +840,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                     const dx = l.x - s.boss.x; const dy = l.y - s.boss.y;
                     if (Math.sqrt(dx * dx + dy * dy) < 50) {
                         s.boss.hp--; s.screenShake.intensity = 5;
+                        s.stats.shotsHitBoss++;
                         playBossHitSound();
                         for (let p = 0; p < 8; p++) {
                             const angle = Math.random() * Math.PI * 2;
@@ -848,7 +859,23 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                             s.screenShake.intensity = 30;
                             s.boss = null; s.bossProjectiles = [];
                             s.bossDefeated = true; s.gamePhase = "normal";
-                            if (onBossDefeated) onBossDefeated(s.elapsedMs);
+                            if (onBossDefeated) {
+                                const totalHits = s.stats.shotsHitAsteroids + s.stats.shotsHitBoss;
+                                onBossDefeated({
+                                    timeMs: s.elapsedMs,
+                                    analytics: {
+                                        shotsFired: s.stats.shotsFired,
+                                        shotsHitAsteroids: s.stats.shotsHitAsteroids,
+                                        bossHits: s.stats.shotsHitBoss,
+                                        totalHits,
+                                        accuracy: s.stats.shotsFired > 0 ? totalHits / s.stats.shotsFired : 0,
+                                        asteroidsDestroyed: s.stats.asteroidsDestroyed,
+                                        deaths: s.stats.deaths,
+                                        damageTaken: PLAYER_LIVES - s.lives,
+                                        livesRemaining: s.lives,
+                                    },
+                                });
+                            }
                         }
                         hit = true;
                     }
@@ -859,6 +886,7 @@ const RocketGame = ({ textContainerRef, onBossDefeated, onGameOver }) => {
                         const dx = l.x - ast.x; const dy = l.y - ast.y;
                         if (Math.sqrt(dx * dx + dy * dy) < ast.radius) {
                             ast.hp--;
+                            s.stats.shotsHitAsteroids++;
                             for (let p = 0; p < 6; p++) {
                                 const angle = Math.random() * Math.PI * 2;
                                 const spd = 2 + Math.random() * 4;

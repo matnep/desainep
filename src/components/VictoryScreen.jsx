@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getLeaderboard, submitScore, formatTime, getPlayerRank } from "../services/leaderboard";
+import {
+    getLeaderboard,
+    submitScore,
+    formatTime,
+    getPlayerRank,
+    getCurrentPlayerId,
+    getCurrentPlayerName,
+    setCurrentPlayerName,
+} from "../services/leaderboard";
 
-const VictoryScreen = ({ timeMs, onClose }) => {
-    // If timeMs is 0 (triggered by View_Scores), start at leaderboard phase
+const VictoryScreen = ({ timeMs, onClose, analytics }) => {
     const [phase, setPhase] = useState(timeMs === 0 ? "leaderboard" : "victory");
     const [name, setName] = useState("");
     const [board, setBoard] = useState([]);
     const [playerRank, setPlayerRank] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [currentPlayerId, setCurrentPlayerId] = useState("");
+    const [error, setError] = useState("");
 
     useEffect(() => {
+        const savedName = getCurrentPlayerName();
+        setName(savedName);
+        setCurrentPlayerId(getCurrentPlayerId());
         loadLeaderboard();
     }, []);
 
@@ -19,7 +31,6 @@ const VictoryScreen = ({ timeMs, onClose }) => {
         try {
             const data = await getLeaderboard(10);
             setBoard(data);
-            // Only fetch rank if there is a valid time
             if (timeMs > 0) {
                 const rank = await getPlayerRank(timeMs);
                 setPlayerRank(rank);
@@ -31,21 +42,54 @@ const VictoryScreen = ({ timeMs, onClose }) => {
         }
     };
 
+    const submitRun = async (playerName) => {
+        await submitScore(playerName, timeMs, { analytics });
+        setCurrentPlayerName(playerName);
+        setCurrentPlayerId(getCurrentPlayerId());
+        await loadLeaderboard();
+        setPhase("leaderboard");
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name.trim()) return;
+        if (!name.trim()) {
+            setError("Name is required.");
+            return;
+        }
 
         setLoading(true);
+        setError("");
         try {
-            await submitScore(name.trim().toUpperCase(), timeMs);
-            await loadLeaderboard();
-            setPhase("leaderboard");
+            await submitRun(name.trim().toUpperCase());
         } catch (err) {
             console.error("Failed to submit score:", err);
+            setError(err?.message || "Failed to submit score.");
         } finally {
             setLoading(false);
         }
     };
+
+    const handleVictoryContinue = async () => {
+        const savedName = getCurrentPlayerName();
+        if (!savedName) {
+            setPhase("input");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+        try {
+            await submitRun(savedName);
+        } catch (err) {
+            console.error("Failed to submit score:", err);
+            setError(err?.message || "Failed to submit score.");
+            setPhase("input");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const accuracyPct = analytics ? Math.round((analytics.accuracy || 0) * 100) : 0;
 
     return (
         <motion.div
@@ -70,7 +114,6 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                             exit={{ opacity: 0, y: -20 }}
                             className="text-center"
                         >
-                            {/* Replaced Emoji with Animated Text */}
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -84,24 +127,49 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                                 Boss Defeated!
                             </h2>
 
-                            <p className="text-white/40 text-sm font-geist-mono mb-1">
-                                COMPLETION TIME
-                            </p>
+                            <p className="text-white/40 text-sm font-geist-mono mb-1">COMPLETION TIME</p>
                             <p className="text-5xl font-black font-geist-mono text-emerald-400 mb-8">
                                 {formatTime(timeMs)}
                             </p>
+
+                            {analytics && (
+                                <div className="mb-8 p-4 rounded-xl bg-white/[0.03] border border-white/10 text-left">
+                                    <p className="text-white/25 text-[10px] uppercase tracking-[0.25em] font-geist-mono mb-3">
+                                        Run Analytics
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-2 text-xs font-geist-mono">
+                                        <p className="text-white/40">Shots</p>
+                                        <p className="text-white/80 text-right">{analytics.shotsFired || 0}</p>
+                                        <p className="text-white/40">Accuracy</p>
+                                        <p className="text-white/80 text-right">{accuracyPct}%</p>
+                                        <p className="text-white/40">Asteroids</p>
+                                        <p className="text-white/80 text-right">{analytics.asteroidsDestroyed || 0}</p>
+                                        <p className="text-white/40">Damage Taken</p>
+                                        <p className="text-white/80 text-right">{analytics.damageTaken || 0}</p>
+                                    </div>
+                                </div>
+                            )}
+
                             {playerRank && (
                                 <p className="text-white/30 text-sm font-geist-mono mb-6">
                                     Your rank: #{playerRank}
                                 </p>
                             )}
+
+                            {error && (
+                                <p className="text-red-400 text-xs font-geist-mono text-center mb-4">
+                                    {error}
+                                </p>
+                            )}
+
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => setPhase("input")}
-                                className="px-8 py-4 bg-white text-black font-bold font-geist rounded-full text-sm uppercase tracking-wider cursor-pointer hover:bg-emerald-400 transition-colors"
+                                onClick={handleVictoryContinue}
+                                disabled={loading}
+                                className="px-8 py-4 bg-white text-black font-bold font-geist rounded-full text-sm uppercase tracking-wider cursor-pointer hover:bg-emerald-400 transition-colors disabled:opacity-50"
                             >
-                                Enter Your Name →
+                                {loading ? "Submitting..." : getCurrentPlayerName() ? "Submit Score" : "Enter Name"}
                             </motion.button>
                         </motion.div>
                     )}
@@ -132,6 +200,35 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                                     <span>Time:</span>
                                     <span className="text-emerald-400 font-bold">{formatTime(timeMs)}</span>
                                 </div>
+
+                                {analytics && (
+                                    <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 text-left">
+                                        <p className="text-white/25 text-[10px] uppercase tracking-[0.25em] font-geist-mono mb-3">
+                                            Run Analytics
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-2 text-xs font-geist-mono">
+                                            <p className="text-white/40">Shots</p>
+                                            <p className="text-white/80 text-right">{analytics.shotsFired || 0}</p>
+                                            <p className="text-white/40">Hits</p>
+                                            <p className="text-white/80 text-right">{analytics.totalHits || 0}</p>
+                                            <p className="text-white/40">Accuracy</p>
+                                            <p className="text-white/80 text-right">{accuracyPct}%</p>
+                                            <p className="text-white/40">Boss Hits</p>
+                                            <p className="text-white/80 text-right">{analytics.bossHits || 0}</p>
+                                            <p className="text-white/40">Asteroids</p>
+                                            <p className="text-white/80 text-right">{analytics.asteroidsDestroyed || 0}</p>
+                                            <p className="text-white/40">Deaths</p>
+                                            <p className="text-white/80 text-right">{analytics.deaths || 0}</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {error && (
+                                    <p className="text-red-400 text-xs font-geist-mono text-center">
+                                        {error}
+                                    </p>
+                                )}
+
                                 <div className="space-y-3 pt-2">
                                     <motion.button
                                         type="submit"
@@ -170,7 +267,9 @@ const VictoryScreen = ({ timeMs, onClose }) => {
                             </p>
                             <div className="space-y-2 mb-8 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
                                 {board.map((entry, i) => {
-                                    const isMe = entry.player_name === name.trim().toUpperCase() && entry.time_ms === timeMs;
+                                    const isMe = entry.player_id
+                                        ? entry.player_id === currentPlayerId
+                                        : entry.player_name === name.trim().toUpperCase();
                                     return (
                                         <motion.div
                                             key={entry.id || i}

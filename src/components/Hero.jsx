@@ -55,7 +55,7 @@ const Hero = () => {
                 <RocketGame
                     key={gameKey}
                     textContainerRef={textRef}
-                    onBossDefeated={(time) => setVictory(time)}
+                    onBossDefeated={(result) => setVictory(result)}
                     onGameOver={() => setShowGameOver(true)}
                 />
             </div>
@@ -167,7 +167,8 @@ const Hero = () => {
             <AnimatePresence>
                 {victory && (
                     <VictoryScreen
-                        timeMs={victory}
+                        timeMs={victory.timeMs}
+                        analytics={victory.analytics}
                         onClose={() => setVictory(null)}
                     />
                 )}
